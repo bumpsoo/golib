@@ -2,6 +2,6 @@
 # Go library for myself
 
 ## packeges
-- array
-- hash
-- err
+- array (for handling slice)
+- hash (for handling map)
+- err (for handling error)
