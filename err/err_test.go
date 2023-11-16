@@ -1,16 +1,29 @@
 package err_test
 
 import (
-	"strconv"
+	"fmt"
 	"testing"
 
 	"github.com/bumpsoo/golib/err"
 )
 
+func ToStr(int) (string, error) {
+	return "foo", fmt.Errorf("some error")
+}
+
+func AnotherErr(string) (string, error) {
+	return "foo foo foo", fmt.Errorf("another error")
+}
+
 func TestWrap(t *testing.T) {
-	v := 3
-	wr := err.Wrap(v, nil)
-	w := err.Do(&wr, func(i int) (string, error) {
-		return strconv.Itoa(i), nil
-	})
+	integer := err.Wrap(3, nil)
+	w := err.Bind(integer, ToStr)
+	ww := err.Bind(w, AnotherErr)
+	s, err := ww()
+	if err != nil && err.Error() != "some error" {
+		t.Fatal("error", err.Error())
+	}
+	if len(s) > 0 {
+		t.Fatal("error", s)
+	}
 }
